@@ -1,23 +1,25 @@
 const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
-			demo: [
-				{
-					title: "FIRST",
-					background: "white",
-					initial: "white"
-				},
-				{
-					title: "SECOND",
-					background: "white",
-					initial: "white"
-				}
-			]
+			planets: [],
+			vehiculos: []
 		},
 		actions: {
 			// Use getActions to call a function within a function
 			exampleFunction: () => {
 				getActions().changeColor(0, "green");
+			},
+			getplanetas: () => {
+				fetch("https://www.swapi.tech/api/planets")
+				.then(res => res.json())
+				.then(data => setStore({planets: data.results}))
+				.catch(err => console.error(err))
+			},
+			getvehiculos: () => {
+				fetch("https://www.swapi.tech/api/vehicles")
+				.then(res => res.json())
+				.then(data => setStore({vehiculos: data.results}))
+				.catch(err => console.error(err))
 			},
 			loadSomeData: () => {
 				const myHeaders = new Headers();

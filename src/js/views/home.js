@@ -7,11 +7,13 @@ export const Home = () => {
   const { store, actions } = useContext(Context);
 
   useEffect(() => {
-    actions.loadSomeData(); // Llama a la acción para cargar los planetas cuando se monta el componente Home
+    actions.loadSomeData(); 
+    actions.getplanetas();// Llama a la acción para cargar los planetas cuando se monta el componente Home
+    actions.getvehiculos(); 
   }, []);
-
+  console.log(store.vehiculos)
   return (
-    <div className="container">
+    <div className="container">  
       <h1>Planetas:</h1>
       <div className="card-container">
         {store.planets &&

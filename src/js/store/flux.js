@@ -1,120 +1,301 @@
 const getState = ({ getStore, getActions, setStore }) => {
+
+
 	return {
+
 		store: {
-			planets: [],
-			planet: {},
-
 			people: [],
-			character: {},
+			planets: [],
+			starships: [],
 
-			vehicles: [],
-			vehicle: {},
+			peopleFeatures: {},
+		    planetsFeatures: {},
+			starshipsFeatures: {},
 
-			favorites: [],
-			resources: ['planets', 'vehicles', 'people']
-
+			favourites: [],
+			// counter: 0,
+			auth: false
 		},
+		
 		actions: {
-			getSWAPIResource: async (object) => {
-				try {
-					const myHeaders = new Headers();
-					myHeaders.append("Content-Type", "application/json");
 
-					const requestOptions = {
-						method: "GET",
-						headers: myHeaders,
-					};
-					let response = await fetch(`https://www.swapi.tech/api/${object}`, requestOptions)
-					let result = await response.json()
-					console.log(result);
-					if (result.hasOwnProperty('results'))
-						// Para '/people', '/planets', '/vehicles'
-						setStore({ [object]: result.results })
-					else {
-						// Para '/people/1', '/planets/1', '/vehicles/1'
-						const objectType = object.split('/')[0].replace(/s$/, '');
-						console.log(`%c${objectType}`, 'color: white; background-color: green;');
-						const resourceName = (objectType === "people") ? "character" : objectType;
-						setStore({ [resourceName]: result.result.properties })
+			addFavouritePlanet :async (id)=>{
+				let token = localStorage.getItem("token")
+				try {
+					const response = await fetch(`https://vigilant-doodle-9777j7j7q6wwh6qg-3000.app.github.dev/favorites/planet/${id}`, 
+					
+					{
+						method: "POST",
+						headers: {
+							"Content-Type": "application/json",
+							"Authorization": "Bearer " + token
+						},
+
+					})
+					const data = await response.json()
+					console.log(data.results)
+					if (response.status == 200) {
+						setStore({ favourites: data.results })
 					}
+					
+					return true;
+
+				}	catch (error) {
+					return false; 
+				}
+			},
+
+			addFavouriteCharacter :async (id)=>{
+				let token = localStorage.getItem("token")
+				try {
+					const response = await fetch(`https://refactored-cod-5ggv6546wgx536p-3000.app.github.dev/favorites/character/${id}`, 
+					
+					{
+						method: "POST",
+						headers: {
+							"Content-Type": "application/json",
+							"Authorization": "Bearer " + token
+						},
+
+					})
+					const data = await response.json()
+					console.log(data.results)
+					if (response.status == 200) {
+						setStore({ favourites: data.results })
+					}
+					
+					return true;
+
+				}	catch (error) {
+					return false; 
+				}
+			},
+	
+			addFavouriteStarship :async (id)=>{
+				let token = localStorage.getItem("token")
+				try {
+					const response = await fetch(`https://refactored-cod-5ggv6546wgx536p-3000.app.github.dev/favorites/starship/${id}`, 
+					
+					{
+						method: "POST",
+						headers: {
+							"Content-Type": "application/json",
+							"Authorization": "Bearer " + token
+						},
+
+					})
+					const data = await response.json()
+					console.log(data.results)
+					if (response.status == 200) {
+						setStore({ favourites: data.results })
+					}
+					
+					return true;
+
+				}	catch (error) {
+					return false; 
+				}
+			},
+
+			getFavorites: async () => {
+				let token = localStorage.getItem("token")
+				try  {
+					const response = await fetch("https://refactored-cod-5ggv6546wgx536p-3000.app.github.dev/user/favorites", 
+					{
+						method: "GET",
+						headers: {
+							"Content-Type": "application/json",
+							"Authorization": "Bearer " + token
+						},
+
+					})
+					const data = await response.json()
+					console.log(data.results)
+					if (response.status == 200) {
+						setStore({ favourites: data.results })
+					}
+					
+					return true;
+				}	catch (error) {
+					return false; 
+				}
+
+
+
+
+			},
+
+			deleteFavourite: async (id) => {
+				let token = localStorage.getItem("token")
+				try {
+					const response = await fetch(`https://refactored-cod-5ggv6546wgx536p-3000.app.github.dev/favorites/${id}`, 
+					{
+						method: "DELETE",
+						headers: {
+							"Content-Type": "application/json",
+							"Authorization": "Bearer " + token
+						},
+
+					})
+					const data = await response.json()
+					console.log(data)
+					if (response.status == 200) return true;
 
 				} catch (error) {
-					console.error(error)
+					return false; 
 				}
 			},
-			addFavorites: (name, uid, resource) => {
-				const newFavorite = {
-					name: name,
-					id: uid,
-					url: '/' + resource + '/' + uid,
-					resource: resource
-				}
-				console.log('%cAñadir favorito....' + `${newFavorite.name}`, 'padding: 5px; background-color: purple; color: white');
-				if (!getStore().favorites.find(favorite => favorite.name === name)) {
-					setStore({ favorites: [...getStore().favorites, newFavorite] });
-				}
-				console.log('/' + resource + '/' + uid);
+
+
+			getPeople: () => {
+					fetch("https://refactored-cod-5ggv6546wgx536p-3000.app.github.dev/all_characters")
+						.then(res => res.json())
+						.then(data => setStore({ people: data.results }))
+						.catch(err => console.error(err))
 			},
-			deleteFavorites: (name) => {
-				console.log("Borrando..." + `${name}`);
-				const newFavorites = getStore().favorites.filter((item) => item !== name);
-				console.log(newFavorites);
-				setStore({ favorites: newFavorites });
-			}
+
+			 getPeopleFeatures: (id) => {
+			 	
+			 	fetch(`https://refactored-cod-5ggv6546wgx536p-3000.app.github.dev/characters/${id}`)
+			.then(res => res.json())
+			.then(data => setStore({ peopleFeatures: data.results }))
+			// .then(data => console.log(data))
+			.catch(err => console.error(err))}, 
+
+
+
+
+			getPlanets: () => {
+
+				fetch("https://refactored-cod-5ggv6546wgx536p-3000.app.github.dev/all_planets")
+					.then(res => res.json())
+					.then(data => setStore({ planets: data.results }))
+					.catch(err => console.error(err))
+
+			},
+
+			getPlanetsFeatures: (id) => {
+			 	
+				fetch(`https://refactored-cod-5ggv6546wgx536p-3000.app.github.dev/planets/${id}`)
+		   .then(res => res.json())
+		   .then(data => setStore({ planetsFeatures: data.results }))
+		   .catch(err => console.error(err))}, 
+
+
+			getStarships: () => {
+
+				fetch("https://refactored-cod-5ggv6546wgx536p-3000.app.github.dev/all_starships")
+					.then(res => res.json())
+					.then(data => setStore({ starships: data.results }))
+					.catch(err => console.error(err))
+
+			},
+
+			getStarshipsFeatures: (id) => {
+			 	
+				fetch(`https://refactored-cod-5ggv6546wgx536p-3000.app.github.dev/starships/${id}`)
+		   .then(res => res.json())
+		   .then(data => setStore({ starshipsFeatures: data.results }))
+		   .catch(err => console.error(err))}, 
+
+
+			login: async (email, password) => {
+				try  {
+					const response = await fetch("https://refactored-cod-5ggv6546wgx536p-3000.app.github.dev/login", 
+					{
+						method: "POST",
+						headers: {
+							"Content-Type": "application/json"
+						},
+						body: JSON.stringify({
+							"email": email,
+							"password": password
+						})
+
+					})
+					const data = await response.json()
+					if (response.status == 200) {
+						localStorage.setItem("token", data.access_token)
+						console.log(data)
+						return true;
+					}
+					else {
+						return false;
+					}
+				}	catch (error) {
+					return false; 
+				}
+
+
+
+
+			},
+			
+			signUp: async (firstName, lastName,email, password) => {
+				try  {
+					const response = await fetch("https://refactored-cod-5ggv6546wgx536p-3000.app.github.dev/signup", 
+					{
+						method: "POST",
+						headers: {
+							"Content-Type": "application/json"
+						},
+						body: JSON.stringify({
+							"first_name": firstName,
+							"last_name": lastName,
+							"email": email,
+							"password": password
+						})
+
+					})
+					const data = await response.json()
+					if (response.status == 200) {
+						// localStorage.setItem("token", data.access_token)
+					}
+					console.log(data)
+					return true;
+				}	catch (error) {
+					return false; 
+				}
+
+
+
+
+			},
+ 
+			validToken: async () => {
+				let token = localStorage.getItem("token")
+				try  {
+					const response = await fetch("https://refactored-cod-5ggv6546wgx536p-3000.app.github.dev/valid-token", 
+					{
+						method: "GET",
+						headers: {
+							"Content-Type": "application/json",
+							"Authorization": "Bearer " + token
+						}
+
+					})
+					let data = await response.json()
+					console.log(data)
+					if (response.status == 200) {
+						setStore({auth: data.is_logged})
+					}
+					console.log(data)
+					
+				}	catch (error) {
+					console.log(error); 
+				}
+
+
+
+
+			},
+ 
+		
+
+
 		}
 	};
+
 };
 
 export default getState;
-
-
-/////////// ***** PARA REALIZARLO CON LOS ELEMENTOS DIRECTAMENTE ***** ///////////
-// -------------- planets / vehicles / people ----------------------------------//
-
-
-// getPlanet: (object) => {
-// 	const myHeaders = new Headers();
-// 	myHeaders.append("Content-Type", "application/json");
-
-// 	const requestOptions = {
-// 		method: "GET",
-// 		headers: myHeaders,
-// 		redirect: "follow"
-// 	};
-// 	fetch(`https://www.swapi.tech/api/${object}`, requestOptions)
-// 		.then((response) => response.json())
-// 		.then((result) => {
-// 			console.log(result);
-// 			setStore({ planet: result.result.properties })
-// 		})
-// 		.catch((error) => console.error(error));
-// },
-// getCharacters: () => {
-// 	const requestOptions = {
-// 		method: "GET",
-// 		redirect: "follow"
-// 	};
-
-// 	fetch("https://www.swapi.tech/api/people/", requestOptions)
-// 		.then((response) => response.json())
-// 		.then((result) => {
-// 			console.log(result);
-// 			setStore({ characters: result.results })
-// 		})
-// 		.catch((error) => console.error(error));
-// },
-// getVehicles: () => {
-// 	const requestOptions = {
-// 		method: "GET",
-// 		redirect: "follow"
-// 	};
-
-// 	fetch("https://www.swapi.tech/api/vehicles/", requestOptions)
-// 		.then((response) => response.json())
-// 		.then((result) => {
-// 			console.log(result);
-// 			setStore({ vehicles: result.results })
-// 		})
-// 		.catch((error) => console.error(error));
-// }
-

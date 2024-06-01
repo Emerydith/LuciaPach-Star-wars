@@ -1,61 +1,57 @@
-import React, { useState, useEffect, useContext } from "react";
-import { Context } from "../store/appContext.js";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
+import "../../styles/demo.css";
+import { Context } from "../store/appContext"
+import starwarsyellow from '../../img/starwarslogo.png'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faX, faXmarkCircle } from '@fortawesome/free-solid-svg-icons';
+import { faUser } from '@fortawesome/free-solid-svg-icons';
+import { useNavigate } from "react-router-dom";
 
 
-//Boostrap
-import Container from 'react-bootstrap/Container';
-import Nav from 'react-bootstrap/Nav';
-import Navbar from 'react-bootstrap/Navbar';
-import NavDropdown from 'react-bootstrap/NavDropdown';
-import Badge from 'react-bootstrap/Badge';
-import Dropdown from 'react-bootstrap/Dropdown';
-
-
-
-export const MainNavbar = () => {
+export const Navbar = () => {
 
 	const { store, actions } = useContext(Context);
+	const navigate = useNavigate();
+
+	console.log(store.auth)
+
+	console.log(store.favourites);
+
+	console.log(store.counter);
+
+	const handleLogout = () => {
+		localStorage.removeItem("token");
+		navigate("/login")
+	}
 
 	return (
-		<Navbar bg="dark" data-bs-theme="dark" collapseOnSelect expand="lg" className="bg-body-tertiary">
-			<Container>
-				<Navbar.Brand href="/">
-					<img
-						src="https://lumiere-a.akamaihd.net/v1/images/sw_logo_stacked_2x-52b4f6d33087_7ef430af.png?region=0,0,586,254"
-						width="100"
-						height="30"
-						className="d-inline-block align-top"
-						alt="Star Wars logo"
-					/>
-				</Navbar.Brand>
-				<Navbar.Toggle aria-controls="responsive-navbar-nav" />
-				<Navbar.Collapse id="responsive-navbar-nav" className="d-flex justify-content-end">
-					<Nav>
-						<Dropdown>
-							<Dropdown.Toggle variant="primary" id="dropdown-basic">
-								Favorites <Badge pill bg="light" text="dark"> {store.favorites.length} </Badge>
-							</Dropdown.Toggle>
-							{store.favorites.length > 0 ? (
-								<Dropdown.Menu>
-									{store.favorites.map((favorite) => (
-										<Link key={favorite.id} className="d-flex gap-2 w-100 justify-content-between py-1 px-3" to={favorite.url} resource={favorite.resource}>
-											{favorite.name}
-											<div className="delete-task text-danger" onClick={(e) => actions.deleteFavorites(favorite)}><FontAwesomeIcon icon={faX} /></div>
-										</Link>
-									))}
-								</Dropdown.Menu>
-							) : (
-								<Dropdown.Menu className="py-1 px-3 w-100">There are no favorites</Dropdown.Menu>
-							)}
 
-						</Dropdown>
-					</Nav>
-				</Navbar.Collapse>
-			</Container>
-		</Navbar>
+		<nav class="navbar bg-dark border-bottom border-body p-0" data-bs-theme="dark">
+			<div className="container-fluid p-0">
+				<Link to={"/"} style={{ textDecoration: 'none', color: "white"}} >
+					<img src={starwarsyellow} alt="Logo" style={{ width: "180px", height: "90px" }} className="d-inline-block align-text-center" />
+					<span className="navbar-brand ms-5">Home</span>
+					{store.auth ? <div className="d-inline-block align-text-center"><Link to={"/favorites"} style={{ textDecoration: 'none', color: "white"}}>
+						<span className="navbar-brand ms-5">Your Favorites</span>
+					</Link></div> : null}
+				</Link>
+				<div className="d-inline-block align-text-center">
+					<Link to={"/login"} style={{ textDecoration: 'none', textAlign: "center" }}>
+						<span className="login-link">Log In</span>
+					</Link>
+					<span className="login-link" onClick={handleLogout}>Log Out</span>
+				</div>
+			</div>
+		</nav>
+
+
+
+		// 		
+		// 		
+		// 		
+		// 		
+
+
 
 	);
 };

@@ -1,11 +1,71 @@
-.scroll-horizontal {
-    overflow-x: auto;
-    white-space: nowrap;
+.card-group {
+    margin: 20px;
+    /* height: 400px; */
+}
+
+
+img {
+    width: 400px;
+    height: 200px;
+    background: grey;
+
 }
 
 .card {
-    display: inline-block;
+    
+    display: flex;
     width: 300px;
-    margin-right: 10px;
-    white-space: normal;
+    height: 400px;
+    color: white; 
+    background: rgb(53, 51, 51); 
+    margin-top: 20px; 
+}
+
+.card-people {
+    width: 100%;
+    overflow-x: auto;
+    white-space: nowrap;
+    margin-bottom: 30px;
+}
+
+p{
+    margin: 0px; 
+}
+
+.footer {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+}
+
+.boton-learn {
+    width: 200px;
+    height: 50px;
+    color: blue;
+    outline: 1px solid blue;
+    background-color: rgb(139, 37, 37);
+    border-radius: 5px;
+    font-size: 20px;
+}
+
+.boton-learn:hover{
+    color: white;
+    background-color: rgb(85, 85, 96);
+}
+.boton-learn:active{
+  color: red; 
+}
+
+.footer__card {
+    display: flex;
+    justify-content: space-between;
+}
+
+.underline {
+    border-bottom: 2px solid rgb(139, 37, 37);
+}
+
+.card-boot {
+    color: rgb(139, 37, 37);
+    text-align: center; 
 }
